@@ -8,7 +8,12 @@
 
 if (FETCH_CONST(life_adminlevel) < 4) exitWith {closeDialog 0; hint localize "STR_ANOTF_ErrorLevel";};
 
-closeDialog 0;
+[] spawn {
+  while {dialog} do {
+   closeDialog 0;
+   sleep 0.01;
+  };
+};
 
 if (life_god) then {
     life_god = false;

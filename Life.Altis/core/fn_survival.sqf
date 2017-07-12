@@ -6,7 +6,7 @@
     Description:
     All survival? things merged into one thread.
 */
-private ["_fnc_food","_fnc_water","_foodTime","_waterTime","_bp","_walkDis","_lastPos","_curPos"];
+private["_fnc_food","_fnc_water","_foodTime","_waterTime","_bp","_walkDis","_lastPos","_curPos"];
 _fnc_food =  {
     if (life_hunger < 2) then {player setDamage 1; hint localize "STR_NOTF_EatMSG_Death";}
     else
@@ -72,7 +72,7 @@ for "_i" from 0 to 1 step 0 do {
     };
 
     /* Check if the player's state changed? */
-    if (!(vehicle player isEqualTo _lastState) || {!alive player}) then {
+    if (vehicle player != _lastState || {!alive player}) then {
         [] call life_fnc_updateViewDistance;
         _lastState = vehicle player;
     };

@@ -4,7 +4,7 @@
 *    Author: Bryan "Tonic" Boardwine
 *
 *    Description:
-*    Main key handler for event 'keyDown'.
+*    Main key handler for event 'keyDown'
 */
 private ["_handled","_shift","_alt","_code","_ctrl","_alt","_ctrlKey","_veh","_locked","_interactionKey","_mapKey","_interruptionKeys"];
 _ctrl = _this select 0;
@@ -55,16 +55,6 @@ if (life_container_active) then {
 };
 
 switch (_code) do {
-    // -- Disable commander/tactical view
-    if (LIFE_SETTINGS(getNumber,"disableCommanderView") isEqualTo 1) then {
-        private _CommandMode = actionKeys "tacticalView";
-
-        if (_code in _CommandMode) then {
-            hint localize "STR_NOTF_CommanderView";
-            _handled = true;
-        };
-    };
-
     //Space key for Jumping
     case 57: {
         if (isNil "jumpActionTime") then {jumpActionTime = 0;};
@@ -144,7 +134,7 @@ switch (_code) do {
     //T Key (Trunk)
     case 20: {
         if (!_alt && !_ctrlKey && !dialog && {!life_action_inUse}) then {
-            if (!(isNull objectParent player) && alive vehicle player) then {
+            if (vehicle player != player && alive vehicle player) then {
                 if ((vehicle player) in life_vehicles) then {
                     [vehicle player] spawn life_fnc_openInventory;
                 };
@@ -161,7 +151,7 @@ switch (_code) do {
                 } else {
                     _list = ["landVehicle","Air","Ship"];
                     if (KINDOF_ARRAY(cursorObject,_list) && {player distance cursorObject < 7} && {isNull objectParent player} && {alive cursorObject} && {!life_action_inUse}) then {
-                        if (cursorObject in life_vehicles || {locked cursorObject isEqualTo 0}) then {
+                        if (cursorObject in life_vehicles) then {
                             [cursorObject] spawn life_fnc_openInventory;
                         };
                     };
@@ -174,7 +164,7 @@ switch (_code) do {
     case 38: {
         //If cop run checks for turning lights on.
         if (_shift && playerSide in [west,independent]) then {
-            if (!(isNull objectParent player) && (typeOf vehicle player) in ["C_Offroad_01_F","B_MRAP_01_F","C_SUV_01_F","C_Hatchback_01_sport_F","B_Heli_Light_01_F","B_Heli_Transport_01_F"]) then {
+            if (vehicle player != player && (typeOf vehicle player) in ["C_Offroad_01_F","B_MRAP_01_F","C_SUV_01_F","C_Hatchback_01_sport_F","B_Heli_Light_01_F","B_Heli_Transport_01_F"]) then {
                 if (!isNil {vehicle player getVariable "lights"}) then {
                     if (playerSide isEqualTo west) then {
                         [vehicle player] call life_fnc_sirenLights;
@@ -192,7 +182,11 @@ switch (_code) do {
     //Y Player Menu
     case 21: {
         if (!_alt && !_ctrlKey && !dialog && !(player getVariable ["restrained",false]) && {!life_action_inUse}) then {
-            [] call life_fnc_p_openMenu;
+            if (!_shift) then {
+                [] call life_fnc_p_openMenu;
+            } else {
+                [] call life_fnc_altisPhone;
+            };
         };
     };
 
@@ -225,7 +219,7 @@ switch (_code) do {
     //O Key
     case 24: {
         if (_shift) then {
-            if !(soundVolume isEqualTo 1) then {
+            if (soundVolume != 1) then {
                 1 fadeSound 1;
                 systemChat localize "STR_MISC_soundnormal";
             } else {
@@ -245,24 +239,24 @@ switch (_code) do {
             };
 
             if (_veh isKindOf "House_F" && {playerSide isEqualTo civilian}) then {
-                if (_veh in life_vehicles && {player distance _veh < 20}) then {
+                if (_veh in life_vehicles && player distance _veh < 8) then {
                     _door = [_veh] call life_fnc_nearestDoor;
                     if (_door isEqualTo 0) exitWith {hint localize "STR_House_Door_NotNear"};
-                    _locked = _veh getVariable [format ["bis_disabled_Door_%1",_door],0];
+                    _locked = _veh getVariable [format["bis_disabled_Door_%1",_door],0];
 
                     if (_locked isEqualTo 0) then {
-                        _veh setVariable [format ["bis_disabled_Door_%1",_door],1,true];
-                        _veh animateSource [format ["Door_%1_source", _door], 0];
+                        _veh setVariable [format["bis_disabled_Door_%1",_door],1,true];
+                        _veh animate [format["door_%1_rot",_door],0];
                         systemChat localize "STR_House_Door_Lock";
                     } else {
-                        _veh setVariable [format ["bis_disabled_Door_%1",_door],0,true];
-                        _veh animateSource [format ["Door_%1_source", _door], 1];
+                        _veh setVariable [format["bis_disabled_Door_%1",_door],0,true];
+                        _veh animate [format["door_%1_rot",_door],1];
                         systemChat localize "STR_House_Door_Unlock";
                     };
                 };
             } else {
                 _locked = locked _veh;
-                if (_veh in life_vehicles && {player distance _veh < 20}) then {
+                if (_veh in life_vehicles && player distance _veh < 8) then {
                     if (_locked isEqualTo 2) then {
                         if (local _veh) then {
                             _veh lock 0;
@@ -313,7 +307,7 @@ switch (_code) do {
                             _veh animateDoor ['DoorR_Back_Open ',1];
                         };
                         systemChat localize "STR_MISC_VehUnlock";
-                        [_veh,"unlockCarSound"] remoteExec ["life_fnc_say3D",RANY];
+                        [_veh,"UnlockCarSound"] remoteExec ["life_fnc_say3D",RANY];
                     } else {
                         if (local _veh) then {
                             _veh lock 2;
@@ -363,7 +357,7 @@ switch (_code) do {
                             _veh animateDoor ['DoorR_Back_Open ',0];
                         };
                         systemChat localize "STR_MISC_VehLock";
-                        [_veh,"lockCarSound"] remoteExec ["life_fnc_say3D",RANY];
+                        [_veh,"LockCarSound"] remoteExec ["life_fnc_say3D",RANY];
                     };
                 };
             };

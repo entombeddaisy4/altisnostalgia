@@ -6,7 +6,7 @@
     Description
     Main gear handling functionality.
 */
-private ["_item","_details","_bool","_ispack","_items","_isgun","_ongun","_override","_toUniform","_toVest","_preview"];
+private["_item","_details","_bool","_ispack","_items","_isgun","_ongun","_override","_toUniform","_toVest","_preview"];
 _item = [_this,0,"",[""]] call BIS_fnc_param;
 _bool = [_this,1,false,[false]] call BIS_fnc_param;
 _ispack = [_this,2,false,[false]] call BIS_fnc_param;
@@ -100,7 +100,8 @@ if (_bool) then {
                                 if (_item in (assignedItems  player)) then {
                                     player addItem _item;
                                 } else {
-                                    player linkItem _item;
+                                    player addItem _item;
+                                    player assignItem _item;
                                 };
                             };
                         };
@@ -204,7 +205,7 @@ if (_bool) then {
                                 if (_override) then {
                                     player addItem _item;
                                 } else {
-                                    private ["_wepItems","_action","_slotTaken"];
+                                    private["_wepItems","_action","_slotTaken"];
                                     _wepItems = switch (_type) do {case 1:{primaryWeaponItems player}; case 2:{secondaryWeaponItems player}; case 3:{handgunItems player}; default {["","",""]};};
                                     _slotTaken = false;
 
@@ -252,7 +253,7 @@ if (_bool) then {
                                 if (_override) then {
                                     player addItem _item;
                                 } else {
-                                    private ["_wepItems","_action","_slotTaken"];
+                                    private["_wepItems","_action","_slotTaken"];
                                     _wepItems = switch (_type) do {case 1:{primaryWeaponItems player}; case 2:{secondaryWeaponItems player}; case 3:{handgunItems player}; default {["","",""]};};
                                     _slotTaken = false;
 
@@ -300,7 +301,7 @@ if (_bool) then {
                                 if (_override) then {
                                     player addItem _item;
                                 } else {
-                                    private ["_wepItems","_action","_slotTaken"];
+                                    private["_wepItems","_action","_slotTaken"];
                                     _wepItems = switch (_type) do {case 1:{primaryWeaponItems player}; case 2:{secondaryWeaponItems player}; case 3:{handgunItems player}; default {["","",""]};};
                                     _slotTaken = false;
 
@@ -338,7 +339,8 @@ if (_bool) then {
                             if (_override) then {
                                 player addItem _item;
                             } else {
-                                player linkItem _item;
+                                player addItem _item;
+                                player assignItem _item;
                             };
                         };
                     };
@@ -350,7 +352,8 @@ if (_bool) then {
                             if (_override) then {
                                 player addItem _item;
                             } else {
-                                player linkItem _item;
+                                player addItem _item;
+                                player assignItem _item;
                             };
                         };
                     };
@@ -411,7 +414,7 @@ if (_bool) then {
                     //Lovely code provided by [OCB]Dash
                     private "_tmpfunction";
                     _tmpfunction = {
-                        private ["_tWeapons","_tWeaponCount"];
+                        private["_tWeapons","_tWeaponCount"];
                         switch (true) do {
                             case (_this in (uniformItems player)): {
                                 _tWeapons = (getWeaponCargo (uniformContainer player)) select 0;

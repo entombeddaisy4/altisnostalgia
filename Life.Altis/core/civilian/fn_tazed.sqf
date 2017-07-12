@@ -6,7 +6,7 @@
     Description:
     Starts the tazed animation and broadcasts out what it needs to.
 */
-private ["_curWep","_curMags","_attach"];
+private["_curWep","_curMags","_attach"];
 params [
     ["_unit",objNull,[objNull]],
     ["_shooter",objNull,[objNull]]
@@ -54,5 +54,5 @@ if (_shooter isKindOf "Man" && alive player) then {
     };
 } else {
     _unit allowDamage true;
-    life_istazed = false;
+    life_iztazed = false;
 };
