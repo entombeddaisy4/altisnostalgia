@@ -1,1 +1,3 @@
-# altisnostalgia
+# NostalgiaRP
+
+extDB2 required
